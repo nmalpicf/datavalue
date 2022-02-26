@@ -62,8 +62,14 @@ GENERATE keys.json
 *************************************************
 TESTING IMAGE
 
+
+docker-credential-gcr-bin 
+
 gcloud auth configure-docker
 
+PORT=8080 && docker run -p 8080:${PORT} -e PORT=${PORT} gcr.io/$PROJECT_ID/$APP_ID
+
+:'
 PORT=8080 && docker run \
 -p 9090:${PORT} \
 -e PORT=${PORT} \
@@ -73,6 +79,7 @@ PORT=8080 && docker run \
 -e GOOGLE_APPLICATION_CREDENTIALS=keys.json \
 -v $GOOGLE_APPLICATION_CREDENTIALS:keys.json:ro \
 gcr.io/$PROJECT_ID/$APP_ID
+'
 
 **************************************************
 DEPLOY IMAGE TO GCLOUD
