@@ -1,21 +1,26 @@
 *************************************************
 CREATE THE PROJECT AND RETRIEVE THE $PROJECT_ID
+
 gcloud projects list
 
 **************************************************
 MAKE SURE BILLING IS ACTIVE FOR PROJECT
+
 gcloud beta billing projects describe $PROJECT_ID
 
 *************************************************
 ENABLE CLOUD BUILD API
+
 https://console.cloud.google.com/flows/enabl://cloud.google.com/appengine/docs/standard/python3/building-app/creating-gcp-project
 
 **************************************************
 ENABLE APP ENGINE AND CREATE RESOURCES
+
 gcloud app create --project $PROJECT_ID
 
 *************************************************
 AUTHENTICATE AND ENABLE TESTING
+
 gcloud auth application-default login
 
 **************************************************
@@ -33,6 +38,7 @@ BASIC FILE STRUCTURE
 
 *************************************************
 CREATE AN ISOLATED PYTHON ENVIRONMENT
+
 python3 -m venv env
 source env/bin/activate
 
@@ -42,6 +48,7 @@ python main.py
 
 **************************************************
 CREATE GIT REPO
+
 git init
 gh repo create
 
@@ -52,24 +59,25 @@ gcloud builds submit --tag gcr.io/$PROJECT_ID/$APP_ID --project=$PROJECT_ID
 
 **************************************************
 ADD SERVICE ACCOUNT
+
 ROLE: 
 	Cloud Run Admin
 	Cloud Run Service Agent
 	Cloud Build Service Account
 	Viewer
+
 GENERATE keys.json
 
 *************************************************
 TESTING IMAGE
 
-
-docker-credential-gcr-bin 
-
+cloud components install docker-credential-gcr
 gcloud auth configure-docker
+
+docker pull gcr.io/$PROJECT_ID/$APP_ID:latest
 
 PORT=8080 && docker run -p 8080:${PORT} -e PORT=${PORT} gcr.io/$PROJECT_ID/$APP_ID
 
-:'
 PORT=8080 && docker run \
 -p 9090:${PORT} \
 -e PORT=${PORT} \
@@ -79,7 +87,6 @@ PORT=8080 && docker run \
 -e GOOGLE_APPLICATION_CREDENTIALS=keys.json \
 -v $GOOGLE_APPLICATION_CREDENTIALS:keys.json:ro \
 gcr.io/$PROJECT_ID/$APP_ID
-'
 
 **************************************************
 DEPLOY IMAGE TO GCLOUD
@@ -87,6 +94,7 @@ DEPLOY IMAGE TO GCLOUD
 gcloud run deploy --image gcr.io/$PROJECT_ID/$APP_ID --platform managed --project= --allow-unauthenticated --region us-east1
 
 *************************************************
+OTHER 
 
 gcloud iam service-accounts list --project=
 
